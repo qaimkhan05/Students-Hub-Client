@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300" role="img" aria-label="Product">
+  <rect width="400" height="300" fill="#e2e8f0"/>
+  <g fill="#94a3b8">
+    <path d="M200 120l-60 35 60 35 60-35z"/>
+    <path d="M200 120l-60 35v40l60 35v-40z"/>
+    <path d="M260 155v40l-60 35v-40z"/>
+  </g>
+</svg>

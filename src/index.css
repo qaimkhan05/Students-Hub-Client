@@ -1,0 +1,263 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap");
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Manrope", "Segoe UI", sans-serif;
+  --font-display: "Sora", "Segoe UI", sans-serif;
+  --color-primary-50: #f0f9ff;
+  --color-primary-100: #e0f2fe;
+  --color-primary-200: #bae6fd;
+  --color-primary-300: #7dd3fc;
+  --color-primary-400: #38bdf8;
+  --color-primary-500: #0ea5e9;
+  --color-primary-600: #0284c7;
+  --color-primary-700: #0369a1;
+  --color-primary-800: #075985;
+  --color-primary-900: #0c4a6e;
+}
+
+:root {
+  color-scheme: light;
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  font-weight: 500;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fbff;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --border-primary: rgba(15, 23, 42, 0.08);
+  --accent-primary: #0ea5e9;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+html.dark {
+  color-scheme: dark;
+  --bg-primary: #020617;
+  --bg-secondary: #0f172a;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #64748b;
+  --border-primary: rgba(148, 163, 184, 0.12);
+  --accent-primary: #38bdf8;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #f5f7fb;
+  background-image:
+    radial-gradient(circle at 12% 0%, rgba(14, 165, 233, 0.08), transparent 25%),
+    radial-gradient(circle at 90% 12%, rgba(16, 185, 129, 0.06), transparent 23%);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.dark body {
+  background-image: 
+    radial-gradient(circle at top left, rgba(14, 165, 233, 0.12), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.08), transparent 28%),
+    linear-gradient(180deg, #020617 0%, #0f172a 45%, #020617 100%);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+p {
+  color: var(--text-secondary);
+}
+
+a {
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+button,
+input,
+select,
+textarea {
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+::selection {
+  background: rgba(14, 165, 233, 0.2);
+  color: inherit;
+}
+
+/* Keep browser autofill readable in dark mode */
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus,
+.dark textarea:-webkit-autofill,
+.dark textarea:-webkit-autofill:hover,
+.dark textarea:-webkit-autofill:focus {
+  -webkit-text-fill-color: #f8fafc;
+  -webkit-box-shadow: 0 0 0 1000px #0f172a inset;
+  caret-color: #f8fafc;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--border-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+/* Scoped Dashboard Theme Helpers */
+.dark .dashboard-shell .text-slate-950,
+.dark .dashboard-shell .text-slate-900 {
+  color: #f8fafc !important;
+}
+
+.dark .dashboard-shell .text-slate-700,
+.dark .dashboard-shell .text-slate-600 {
+  color: #cbd5e1 !important;
+}
+
+.dark .dashboard-shell .text-slate-500,
+.dark .dashboard-shell .text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+.dark .dashboard-shell .bg-white {
+  background-color: rgb(2 6 23 / 0.9) !important;
+}
+
+.dark .dashboard-shell .bg-slate-50 {
+  background-color: rgb(15 23 42 / 0.82) !important;
+}
+
+.dark .dashboard-shell .bg-slate-200 {
+  background-color: rgb(30 41 59 / 1) !important;
+}
+
+.dark .dashboard-shell .border-slate-200,
+.dark .dashboard-shell .border-slate-300 {
+  border-color: rgb(51 65 85 / 0.95) !important;
+}
+
+.dark .dashboard-shell .ring-slate-200 {
+  --tw-ring-color: rgb(51 65 85 / 0.95) !important;
+}
+
+.dark .dashboard-shell input,
+.dark .dashboard-shell select,
+.dark .dashboard-shell textarea {
+  color: #f8fafc;
+  background-color: rgb(15 23 42 / 0.88);
+  border-color: rgb(51 65 85 / 0.95);
+}
+
+.dark .dashboard-shell input::placeholder,
+.dark .dashboard-shell textarea::placeholder {
+  color: #64748b;
+}
+
+.dark .dashboard-shell input:focus,
+.dark .dashboard-shell select:focus,
+.dark .dashboard-shell textarea:focus {
+  background-color: rgb(2 6 23 / 0.96);
+  border-color: rgb(14 165 233 / 0.88);
+}
+
+/* Scoped Contact Page Form Dark Mode Helpers */
+.dark .contact-panel input,
+.dark .contact-panel select,
+.dark .contact-panel textarea {
+  color: #f8fafc !important;
+  background-color: rgb(15 23 42 / 0.9) !important;
+  border-color: rgb(51 65 85 / 0.95) !important;
+}
+
+.dark .contact-panel input::placeholder,
+.dark .contact-panel textarea::placeholder {
+  color: #64748b !important;
+}
+
+.dark .contact-panel input:focus,
+.dark .contact-panel select:focus,
+.dark .contact-panel textarea:focus {
+  background-color: rgb(2 6 23 / 0.96) !important;
+  border-color: rgb(14 165 233 / 0.88) !important;
+}
+
+/* Custom Animations */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 0.4; }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes cart-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); }
+  50% { box-shadow: 0 0 0 10px rgba(14, 165, 233, 0.08); }
+}
+
+.animate-cart-glow {
+  animation: cart-glow 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
