@@ -1,10 +1,10 @@
 import axios from 'axios';
 
+const DEFAULT_PROD_API_URL = 'https://web-production-224a.up.railway.app/api';
+
 const apiBaseUrl =
   import.meta.env.VITE_API_URL?.trim() ||
-  (import.meta.env.DEV
-    ? 'http://localhost:5000/api'
-    : `${window.location.origin.replace(/\/$/, '')}/api`);
+  (import.meta.env.DEV ? 'http://localhost:5000/api' : DEFAULT_PROD_API_URL);
 
 const api = axios.create({
   baseURL: apiBaseUrl,
