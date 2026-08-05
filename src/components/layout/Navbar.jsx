@@ -26,9 +26,9 @@ const Navbar = () => {
   const location = useLocation();
 
   const links = [
-    { label: 'Store', path: '/store', icon: <ShoppingBag className="h-4 w-4" /> },
     { label: 'Guide', path: '/guide', icon: <PlayCircle className="h-4 w-4" /> },
     { label: 'Contact', path: '/contact', icon: <Mail className="h-4 w-4" /> },
+    { label: 'Store', path: '/store', icon: <ShoppingBag className="h-4 w-4" /> },
   ];
   const themeLabel = isDark ? 'Switch to light' : 'Switch to dark';
 
@@ -98,7 +98,7 @@ const Navbar = () => {
                   </div>
                   <div className="text-left">
                     <p className="text-sm font-bold text-slate-950 dark:text-white">{user.name?.split(' ')[0]}</p>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">{user.role}</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">{user.role}</p>
                   </div>
                   <ChevronDown
                     className={`h-4 w-4 text-slate-400 transition dark:text-slate-500 ${isProfileOpen ? 'rotate-180' : ''}`}
@@ -114,7 +114,7 @@ const Navbar = () => {
                       className="absolute right-0 mt-3 w-64 rounded-[1.5rem] border border-slate-200 bg-white p-3 shadow-[0_24px_60px_rgba(15,23,42,0.12)] dark:border-slate-800 dark:bg-slate-950"
                     >
                       <div className="rounded-[1.25rem] bg-slate-50 px-4 py-4 dark:bg-slate-900">
-                        <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">Signed in as</p>
+                        <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Signed in as</p>
                         <p className="mt-2 font-bold text-slate-950 dark:text-white">{user.email}</p>
                       </div>
 

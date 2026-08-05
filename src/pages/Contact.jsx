@@ -24,8 +24,9 @@ const contactChannels = [
   {
     icon: <Mail className="h-7 w-7" />,
     label: 'Email me',
-    detail: 'Best for direct contact and account questions.',
+    detail: 'Click to reveal the email address.',
     href: 'mailto:qaim22994@gmail.com',
+    reveal: 'qaim22994@gmail.com',
   },
   {
     icon: <GithubIcon className="h-7 w-7" />,
@@ -50,6 +51,7 @@ const contactChannels = [
 const Contact = () => {
   const [form, setForm] = useState(initialForm);
   const [loading, setLoading] = useState(false);
+  const [revealed, setRevealed] = useState('');
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -159,19 +161,39 @@ const Contact = () => {
 
       <StaggerReveal className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
         {contactChannels.map((channel) => {
+          const isRevealed = revealed === channel.label;
           const card = (
             <div className="flex h-full flex-col items-center justify-center gap-4 rounded-[1.8rem] border border-slate-200 bg-white/86 p-8 text-center shadow-[0_20px_50px_rgba(15,23,42,0.05)] backdrop-blur transition-all duration-300 group-hover:-translate-y-1.5 group-hover:border-sky-400/60 group-hover:shadow-[0_28px_60px_rgba(14,165,233,0.15)] dark:border-slate-800 dark:bg-slate-950/84 dark:shadow-none dark:group-hover:border-sky-500/50">
               <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 to-emerald-500 text-white shadow-lg shadow-sky-500/25 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
                 {channel.icon}
               </div>
-              <p className="text-xs font-black uppercase tracking-[0.22em] text-slate-400 dark:text-slate-500">
-                {channel.label}
+              <p className="text-xs font-black uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">
+                {isRevealed && channel.reveal ? 'Email address' : channel.label}
               </p>
-              {channel.value && (
-                <p className="-mt-2 text-sm font-bold text-slate-700 dark:text-slate-200">{channel.value}</p>
+              {isRevealed && channel.reveal ? (
+                <p className="-mt-2 break-all text-sm font-bold text-sky-700 dark:text-sky-300">{channel.reveal}</p>
+              ) : (
+                channel.value && <p className="-mt-2 text-sm font-bold text-slate-700 dark:text-slate-200">{channel.value}</p>
               )}
             </div>
           );
+
+          if (channel.reveal) {
+            return (
+              <StaggerItem key={channel.label}>
+                <button
+                  type="button"
+                  onClick={() => setRevealed((current) => (current === channel.label ? '' : channel.label))}
+                  title={channel.detail}
+                  aria-label={channel.label}
+                  className="group block h-full w-full text-center"
+                >
+                  {card}
+                </button>
+              </StaggerItem>
+            );
+          }
+
           return (
             <StaggerItem key={channel.label}>
               {channel.href ? (

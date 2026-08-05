@@ -1,4 +1,3 @@
-import { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from 'react-hot-toast';
@@ -7,16 +6,16 @@ import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
 import Layout from './components/layout/Layout';
 import PrivateRoute from './components/common/PrivateRoute';
-import PageLoader from './components/common/PageLoader';
-
-const Home = lazy(() => import('./pages/Home'));
-const Contact = lazy(() => import('./pages/Contact'));
-const Guide = lazy(() => import('./pages/Guide'));
-const Login = lazy(() => import('./pages/Login'));
-const Register = lazy(() => import('./pages/Register'));
-const Store = lazy(() => import('./pages/Store'));
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const Profile = lazy(() => import('./pages/Profile'));
+import ErrorBoundary from './components/common/ErrorBoundary';
+import Home from './pages/Home';
+import Contact from './pages/Contact';
+import Guide from './pages/Guide';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Store from './pages/Store';
+import Dashboard from './pages/Dashboard';
+import Profile from './pages/Profile';
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
@@ -26,7 +25,7 @@ function App() {
           <CartProvider>
             <Router>
               <Layout>
-                <Suspense fallback={<PageLoader />}>
+                <ErrorBoundary>
                   <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/contact" element={<Contact />} />
@@ -50,8 +49,9 @@ function App() {
                         </PrivateRoute>
                       }
                     />
+                    <Route path="*" element={<NotFound />} />
                   </Routes>
-                </Suspense>
+                </ErrorBoundary>
               </Layout>
               <Toaster position="top-right" />
             </Router>

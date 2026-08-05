@@ -36,11 +36,14 @@ const createEmptyProductForm = () => ({
   description: '',
 });
 
-const productCategories = ['Notes', 'Coding Projects', 'Templates', 'Other'];
+const productCategories = ['Notes', 'Coding Projects', 'Templates', 'Books', 'Other'];
 const thumbnailAccept = 'image/png,image/jpeg,image/webp,image/gif';
-const courseFileAccept = '.pdf,.zip,.doc,.docx,.ppt,.pptx,.xlsx,.txt,.rar,.7z';
+const courseFileAccept = '.pdf,.zip,.doc,.docx,.ppt,.pptx,.xlsx,.txt,.rar,.7z,.epub,.mobi,.azw';
+const bookFileAccept = '.pdf,.epub,.mobi,.azw,.doc,.docx,.txt,.zip';
 const thumbnailMaxBytes = 5 * 1024 * 1024;
-const courseFileMaxBytes = 100 * 1024 * 1024;
+const courseFileMaxBytes = 950 * 1024 * 1024;
+const bookFileMaxBytes = 950 * 1024 * 1024;
+const uploadRequestTimeout = 60 * 60 * 1000;
 
 const panelTabs = {
   admin: [
@@ -146,10 +149,10 @@ const Dashboard = () => {
     try {
       const payload = await buildProductPayload(productForm);
       if (productForm.id) {
-        await api.put('/products/' + productForm.id, payload);
+        await api.put('/products/' + productForm.id, payload, { timeout: uploadRequestTimeout });
         await refreshDashboard('Product updated successfully');
       } else {
-        await api.post('/products', payload);
+        await api.post('/products', payload, { timeout: uploadRequestTimeout });
         await refreshDashboard('Product added successfully');
       }
     } catch (err) {
@@ -253,6 +256,7 @@ const Dashboard = () => {
     try {
       const response = await api.get('/products/' + product._id + '/download', {
         responseType: 'blob',
+        timeout: 10 * 60 * 1000,
       });
       const contentType = response.headers['content-type'] || 'application/octet-stream';
       const downloadUrl = URL.createObjectURL(new Blob([response.data], { type: contentType }));
@@ -268,6 +272,24 @@ const Dashboard = () => {
       toast.error(err.response?.data?.message || 'The resource could not be downloaded');
     } finally {
       setDownloadingProductId('');
+    }
+  };
+
+  const handleRemoveFromLibrary = async (order, product) => {
+    if (!product?._id || !order?._id) {
+      return;
+    }
+
+    if (!window.confirm('Remove "' + (product.title || 'this item') + '" from your library? You will lose access to this file.')) {
+      return;
+    }
+
+    try {
+      await api.delete('/dashboard/library/' + order._id + '/' + product._id);
+      await loadDashboard(true);
+      toast.success('Item removed from your library');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Item could not be removed');
     }
   };
 
@@ -400,7 +422,13 @@ const Dashboard = () => {
               onSubmit={handleProductSubmit}
               onReset={resetProductForm}
               onSelectThumbnail={handleProductAssetSelection('thumbnailUpload', thumbnailMaxBytes, 'Thumbnail image')}
-              onSelectCourse={handleProductAssetSelection('courseUpload', courseFileMaxBytes, 'Resource file')}
+              onSelectCourse={handleProductAssetSelection(
+                'courseUpload',
+                productForm.category === 'Books' ? bookFileMaxBytes : courseFileMaxBytes,
+                productForm.category === 'Books' ? 'Book file' : 'Resource file'
+              )}
+              fileAccept={productForm.category === 'Books' ? bookFileAccept : courseFileAccept}
+              fileLabel={productForm.category === 'Books' ? 'Book file' : 'Resource file'}
               submitting={submitting}
               onEdit={(product) => setProductForm(mapProductToForm(product))}
               onDelete={handleDeleteProduct}
@@ -434,6 +462,7 @@ const Dashboard = () => {
               orders={userOrders}
               onDownload={handleDownloadProduct}
               downloadingProductId={downloadingProductId}
+              onRemove={handleRemoveFromLibrary}
             />
           ) : null}
         </>
@@ -537,13 +566,15 @@ const AdminCatalogPanel = ({
   onReset,
   onSelectThumbnail,
   onSelectCourse,
+  fileAccept,
+  fileLabel,
   submitting,
   onEdit,
   onDelete,
 }) => (
   <div className="grid min-w-0 gap-5 xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
     <SimplePanel title={productForm.id ? 'Edit product' : 'Add product'} description="Add a digital resource with a title, price, cover, and file." icon={<Package className="h-4 w-4" />}>
-      <ProductForm form={productForm} onChange={onFormChange} onSubmit={onSubmit} onReset={onReset} onSelectThumbnail={onSelectThumbnail} onSelectCourse={onSelectCourse} submitting={submitting} />
+      <ProductForm form={productForm} onChange={onFormChange} onSubmit={onSubmit} onReset={onReset} onSelectThumbnail={onSelectThumbnail} onSelectCourse={onSelectCourse} fileAccept={fileAccept} fileLabel={fileLabel} submitting={submitting} />
     </SimplePanel>
     <SimplePanel title="Products" description="Edit or remove items currently visible in the store." icon={<ShoppingBag className="h-4 w-4" />}>
       <SearchBar value={searchValue} onChange={onSearch} placeholder="Search products" summary={'Showing ' + products.length + ' of ' + totalProducts} />
@@ -605,7 +636,7 @@ const UserOverview = ({ user, workspace, orders, completedOrders, profileComplet
   </div>
 );
 
-const UserLibrary = ({ orders, onDownload, downloadingProductId }) => (
+const UserLibrary = ({ orders, onDownload, downloadingProductId, onRemove }) => (
   <SimplePanel
     title="My library"
     description="Download the resources you have purchased."
@@ -630,15 +661,27 @@ const UserLibrary = ({ orders, onDownload, downloadingProductId }) => (
                     <p className="break-words text-sm font-semibold text-slate-900 dark:text-white">{product.title}</p>
                     <p className="mt-1 break-words text-xs text-slate-500 dark:text-slate-400">{product.category} · {formatPrice(product.price)}</p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => onDownload(product)}
-                    disabled={downloadingProductId === product._id}
-                    className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 disabled:cursor-wait disabled:opacity-60 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:bg-slate-800"
-                  >
-                    <Download className="h-3.5 w-3.5" />
-                    {downloadingProductId === product._id ? 'Preparing...' : 'Download'}
-                  </button>
+                  <div className="flex min-w-0 flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => onDownload(product)}
+                      disabled={downloadingProductId === product._id}
+                      className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 disabled:cursor-wait disabled:opacity-60 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:bg-slate-800"
+                    >
+                      <Download className="h-3.5 w-3.5" />
+                      {downloadingProductId === product._id ? 'Preparing...' : 'Download'}
+                    </button>
+                    {onRemove ? (
+                      <button
+                        type="button"
+                        onClick={() => onRemove(order, product)}
+                        className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-rose-200 bg-white px-3 py-2 text-xs font-semibold text-rose-700 hover:bg-rose-50 dark:border-rose-900/50 dark:bg-slate-950 dark:text-rose-300 dark:hover:bg-rose-950/30"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                        Remove
+                      </button>
+                    ) : null}
+                  </div>
                 </div>
               ))}
             </div>
@@ -759,7 +802,7 @@ const SelectField = ({ label, value, onChange, options, disabled }) => (
   </label>
 );
 
-const ProductForm = ({ form, onChange, onSubmit, onReset, onSelectThumbnail, onSelectCourse, submitting }) => {
+const ProductForm = ({ form, onChange, onSubmit, onReset, onSelectThumbnail, onSelectCourse, fileAccept, fileLabel, submitting }) => {
   const previewUrl = useMemo(() => {
     if (!form.thumbnailUpload) {
       return form.thumbnailUrl;
@@ -799,7 +842,7 @@ const ProductForm = ({ form, onChange, onSubmit, onReset, onSelectThumbnail, onS
       </div>
       <div className="grid min-w-0 gap-3">
         <UploadField label="Cover image" icon={<ImageIcon className="h-4 w-4" />} accept={thumbnailAccept} selectedLabel={form.thumbnailUpload?.name || form.thumbnailUrl || 'No image selected'} currentUrl={form.thumbnailUpload ? '' : form.thumbnailUrl} onSelect={onSelectThumbnail} previewUrl={previewUrl} />
-        <UploadField label="Resource file" icon={<FileText className="h-4 w-4" />} accept={courseFileAccept} selectedLabel={form.courseUpload?.name || form.fileUrl || 'No file selected'} currentUrl={form.courseUpload ? '' : form.fileUrl} onSelect={onSelectCourse} />
+        <UploadField label={fileLabel} icon={<FileText className="h-4 w-4" />} accept={fileAccept} selectedLabel={form.courseUpload?.name || form.fileUrl || 'No file selected'} currentUrl={form.courseUpload ? '' : form.fileUrl} onSelect={onSelectCourse} />
       </div>
       <div className="grid min-w-0 gap-3 sm:grid-cols-2">
         <FormField label="Cover URL" placeholder="https://..." required={!form.thumbnailUpload} value={form.thumbnailUrl} onChange={(value) => onChange((current) => ({ ...current, thumbnailUrl: value }))} />

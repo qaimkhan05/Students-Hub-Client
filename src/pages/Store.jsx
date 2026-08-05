@@ -27,12 +27,12 @@ const Store = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const categories = ['All', 'Notes', 'Coding Projects', 'Templates'];
+  const categories = ['All', 'Books', 'Notes', 'Coding Projects', 'Templates'];
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await api.get('/products');
+        const res = await api.cachedGet('/products');
         setProducts(res.data.data);
       } catch {
         toast.error('Failed to fetch products');
@@ -114,7 +114,7 @@ const Store = () => {
               <div>
                 <h1 className="text-4xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">Digital marketplace</h1>
                 <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600 dark:text-slate-300">
-                  Browse notes, templates, and coding resources designed to help students move faster without sacrificing quality.
+                  Browse notes, templates, books, and coding resources designed to help students move faster without sacrificing quality.
                 </p>
               </div>
             </div>
@@ -303,7 +303,7 @@ const Store = () => {
                               <div className="flex items-start justify-between gap-3">
                                 <div className="min-w-0">
                                   <h4 className="truncate text-sm font-bold text-slate-950 dark:text-white">{item.title}</h4>
-                                  <p className="mt-1 text-xs font-bold uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">
+                                  <p className="mt-1 text-xs font-bold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
                                     {item.category}
                                   </p>
                                 </div>
@@ -316,7 +316,7 @@ const Store = () => {
                               </div>
                               <div className="mt-4 flex items-center justify-between">
                                 <p className="text-sm font-bold text-sky-700 dark:text-sky-300">{formatPrice(item.price)}</p>
-                                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 dark:text-slate-500">
+                                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
                                   Instant access
                                 </p>
                               </div>

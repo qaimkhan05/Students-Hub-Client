@@ -47,7 +47,7 @@ export const AuthInputField = ({ label, icon, hint, className = '', ...props }) 
   <label className="block">
     <div className="mb-2 flex items-center justify-between gap-3">
       <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">{label}</span>
-      {hint ? <span className="text-xs font-medium text-slate-400 dark:text-slate-500">{hint}</span> : null}
+      {hint ? <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{hint}</span> : null}
     </div>
 
     <div className="group relative">

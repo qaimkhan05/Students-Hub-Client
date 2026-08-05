@@ -4,7 +4,7 @@ import SEO from '../components/common/SEO';
 const Home = () => (
   <div className="pb-16">
     <SEO
-      title="Home - Digital Resources for Pakistani Students"
+      title="Home"
       description="Browse digital study resources and manage your Student Hub account in one simple place."
     />
 

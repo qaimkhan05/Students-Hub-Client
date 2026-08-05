@@ -276,7 +276,7 @@ const SummaryPill = ({ label, value }) => (
 
 const StatusRow = ({ label, value, tone = 'neutral' }) => (
   <div className="flex items-center justify-between gap-4 rounded-2xl bg-slate-50 px-4 py-3 dark:bg-slate-900">
-    <span className="text-xs font-black uppercase tracking-[0.14em] text-slate-400 dark:text-slate-500">{label}</span>
+    <span className="text-xs font-black uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{label}</span>
     <span
       className={`text-right text-sm font-bold ${
         tone === 'success'

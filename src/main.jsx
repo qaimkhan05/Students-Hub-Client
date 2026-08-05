@@ -1,4 +1,3 @@
-import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import App from './App.jsx';
@@ -14,4 +13,4 @@ const app = googleClientId ? (
   <App />
 );
 
-createRoot(document.getElementById('root')).render(<StrictMode>{app}</StrictMode>);
+createRoot(document.getElementById('root')).render(app);

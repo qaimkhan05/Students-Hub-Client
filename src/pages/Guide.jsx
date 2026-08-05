@@ -138,7 +138,7 @@ const Guide = () => {
                   <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 to-emerald-500 text-white shadow-lg shadow-sky-500/25 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
                     {step.icon}
                   </div>
-                  <span className="text-3xl font-black tracking-tight text-slate-200 dark:text-slate-800">{step.number}</span>
+                  <span className="text-3xl font-black tracking-tight text-slate-400 dark:text-slate-600">{step.number}</span>
                 </div>
                 <h3 className="mt-6 text-xl font-black tracking-tight text-slate-950 dark:text-white">{step.title}</h3>
                 <p className="mt-3 flex-1 text-sm leading-7 text-slate-600 dark:text-slate-300">{step.description}</p>
